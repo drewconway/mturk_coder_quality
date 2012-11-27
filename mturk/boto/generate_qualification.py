@@ -160,7 +160,7 @@ class CoderQualityQualificationTest(object):
 
 		# Create 'Economic' policy scale question and answer fields
 		content_econ_policy = QuestionContent()
-		content_econ_policy.append_field("Text", "If you selected 'Not Econonmic or Social' the task is complete. Either move to the next sentence, or submit your answers.")
+		content_econ_policy.append_field("Text", "If you selected 'Not Economic or Social' the task is complete. Either move to the next sentence, or submit your answers.")
 		content_econ_policy.append_field("Text", "If you selected 'Economic', now select economic policy scale below.  Otherwise, do not make a selection.")
 		ans_econ_scale = SelectionAnswer(min=1, max=1, style="dropdown", selections=econ_scale)
 		qst_econ_policy = Question(identifier = "econ_scale_"+str(question_num),
