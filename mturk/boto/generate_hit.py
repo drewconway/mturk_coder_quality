@@ -31,8 +31,8 @@ if __name__ == '__main__':
 	from datetime import datetime
 
 	# Account data
-	acct = {"access_key" : "AKIAIHR7KNG5J645RGEQ", 
-	"secret_key" : "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", 
+	acct = {"access_key" : "?", 
+	"secret_key" : "?", 
 	"host" : "mechanicalturk.sandbox.amazonaws.com"}
 
 	## Create qualification type

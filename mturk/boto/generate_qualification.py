@@ -293,13 +293,9 @@ if __name__ == '__main__':
 	from datetime import datetime
 
 	# Account data
-	# you may want to remove this
-	# if you create ~/.boto
-	# keys can be added there
-	#
-	#http://code.google.com/p/boto/wiki/BotoConfig
-	acct = {"access_key" : "AKIAIHR7KNG5J645RGEQ", 
-	"secret_key" : "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", 
+	# http://code.google.com/p/boto/wiki/BotoConfig
+	acct = {"access_key" : "?", 
+	"secret_key" : "?", 
 	"host" : "mechanicalturk.sandbox.amazonaws.com"}
 
 	# Qualification test info
