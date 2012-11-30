@@ -283,6 +283,8 @@ class CoderQualityQualificationType(object):
 
 
 def open_mturk_connection(acct):
+	# Useless now that I understand how the boto config files works, 
+	# but leaving it here since there is no reason to delete it.
 	return MTurkConnection(aws_access_key_id = acct["access_key"], 
 						   aws_secret_access_key = acct["secret_key"], 
 						   host = acct["host"])
@@ -292,11 +294,9 @@ def open_mturk_connection(acct):
 if __name__ == '__main__':
 	from datetime import datetime
 
-	# Account data
+	# Account data saved locally in config boto config file
 	# http://code.google.com/p/boto/wiki/BotoConfig
-	acct = {"access_key" : "?", 
-	"secret_key" : "?", 
-	"host" : "mechanicalturk.sandbox.amazonaws.com"}
+	host = "mechanicalturk.sandbox.amazonaws.com"
 
 	# Qualification test info
 	n = 4
@@ -315,7 +315,7 @@ if __name__ == '__main__':
 	duration = 30*60
 
 	# Open MTurk connection
-	mturk = open_mturk_connection(acct)
+	mturk = MTurkConnection(host = host)
 
 	# Create new qualification type
 	qual_type = CoderQualityQualificationType(mturk, qual, qual_name, qual_description, qual_keywords, duration, create=True)

@@ -15,25 +15,15 @@ Created by  (drew.conway@nyu.edu) on
 from boto.mturk.connection import MTurkConnection
 from boto.mturk.qualification import Qualifications, Requirement
 from boto.mturk.question import ExternalQuestion
-# from boto.mturk.question import Overview,AnswerSpecification,SelectionAnswer,FormattedContent
-# from scipy import random
-# import json
-
 from generate_qualification import CoderQualityQualificationTest,CoderQualityQualificationType
-
-def open_mturk_connection(acct):
-	return MTurkConnection(aws_access_key_id = acct["access_key"], 
-						   aws_secret_access_key = acct["secret_key"], 
-						   host = acct["host"])
 
 if __name__ == '__main__':
 
 	from datetime import datetime
 
-	# Account data
-	acct = {"access_key" : "?", 
-	"secret_key" : "?", 
-	"host" : "mechanicalturk.sandbox.amazonaws.com"}
+	# Account data saved locally in config boto config file
+	# http://code.google.com/p/boto/wiki/BotoConfig
+	host = "mechanicalturk.sandbox.amazonaws.com"
 
 	## Create qualification type
 
@@ -53,7 +43,7 @@ if __name__ == '__main__':
 	duration = 30*60
 
 	# Open MTurk connection
-	mturk = open_mturk_connection(acct)
+	mturk = MTurkConnection(host = host)
 
 	# Create new qualification type
 	qual_type = CoderQualityQualificationType(mturk, qual_test, qual_name, qual_description, keywords, duration, create=True)
