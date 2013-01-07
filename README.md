@@ -13,7 +13,7 @@ These results will additionally be reported in a larger, co-authored, paper on u
 
 ## Experimental Design
 
-**NOTE***: For details on th specific coding tasks please see the [worker instruction page](http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/instructions.html).
+**NOTE**: For details on the specific coding tasks please see the [worker instruction page](http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/instructions.html).
 
 This set of experiments seeks to test how various mechanism for qualifying Mechanical Turk workers for a text coding task can improve the quality of results.  In this experiment I use a Qualification Test data structure as the primary filtering mechanism.  Workers must pass this test in order to be qualified to work on the coding task, and thus receive compensation. 
 
