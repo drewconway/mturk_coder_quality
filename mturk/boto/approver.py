@@ -15,6 +15,7 @@ Created by  (drew.conway@nyu.edu) on
 from boto.mturk.connection import MTurkConnection
 from itertools import chain
 from datetime import datetime
+import argparse
 import csv
 
 def formAns(ans_obj):
@@ -46,7 +47,6 @@ def parseAnswer(form, num_sentences=4):
 def reviewAssignment(assigments, mturk=None, auto_approve=True):
 	answer_list = list()
 	for a in assignments:
-		print a.AssignmentStatus
 		if a.AssignmentStatus == "Submitted":
 			aid = a.AssignmentId
 			answer_list.append(parseAnswer(a))
@@ -58,10 +58,23 @@ def reviewAssignment(assigments, mturk=None, auto_approve=True):
 if __name__ == '__main__':
 
 	# File path to downloads
-	res_dir = "../results/csv/"
-	
-	# Only thing that needs to change is whether this is sandbox or production
-	host = "mechanicalturk.sandbox.amazonaws.com"
+	res_dir = "../results/"
+
+	# Need to take single user argument for production or sandbox server
+	parser = argparse.ArgumentParser(description='This script downloads coding results and approves works.')
+	parser.add_argument("--prod", type=str, choices="yn", default="n",
+		help="Should we look for results on the production server? Default is 'n', which is the sandbox.")
+
+	# Get arguments from user 
+	args = parser.parse_args()
+
+	# Perform server switch
+	if args.prod == "n":
+		host = "mechanicalturk.sandbox.amazonaws.com"
+		res_dir = res_dir + "sandbox/"
+	else:
+		host = "mechanicalturk.amazonaws.com"
+		res_dir = res_dir + "production/"
 
 	# Open MTurk connection
 	mturk = MTurkConnection(host = host)
@@ -85,9 +98,6 @@ if __name__ == '__main__':
 		assignments = mturk.get_assignments(h.HITId)
 		if len(assignments) > 0:
 			response_list.append(reviewAssignment(assignments, mturk))
-		else:
-			print h.HITStatus
-			# mturk.dispose_hit(h.HITId)
 	responses = list(chain.from_iterable(response_list))
 
 	# # Output file, name simply based on the time it is created

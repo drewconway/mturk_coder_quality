@@ -47,7 +47,7 @@ if __name__ == '__main__':
 	# Account data saved locally in config boto config file
 	# http://code.google.com/p/boto/wiki/BotoConfig
 	
-	# Take in argumens provided to script by user. The first set are basic HIT components
+	# Take in arguments provided to script by user. The first set are basic HIT components
 	parser = argparse.ArgumentParser(description='This script will push a new experiment to MTurk. Several users defined arguments are required.')
 	parser.add_argument("--hits", metavar="N", type=int, default=100,
 		help="The number of HITs to push of this type. Default is 100.")
@@ -55,7 +55,7 @@ if __name__ == '__main__':
 		help="The number of assignments for each HIT. Default is 5.")
 	
 	# This is our two-way experimental design, by number of qualification sentences in test and 
-	# tolerance for incorect codings. Thus, the user inputs are restricted to those discussed
+	# tolerance for incorrect codings. Thus, the user inputs are restricted to those discussed
 	# during the planning phase!
 	parser.add_argument("--count", type=int, choices=[4,8,12,16], default=4, 
 		help="The number of sentences in the qualification test. Default is 4.")
