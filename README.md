@@ -66,7 +66,7 @@ The qualification test asks the worker to code example sentences pulled directly
 
 #### Coding Task screen shot
 
-!(Coding Task screen shot)[http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/task.png]
+[![Coding Task screen shot](http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/task.png)]
 
 #### Approving results and collecting data
 
