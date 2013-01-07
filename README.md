@@ -9,7 +9,7 @@ The following repository is a collection of code, data, and web frameworks for e
 
 These results will additionally be reported in a larger, co-authored, paper on using crowd-source to code political text.
 
-**These files have been exposed primarily to provide replication resources for these experiments.**
+**NOTE**: These files have been exposed primarily to provide replication resources for these experiments. These experiments rely on formatted web pages hosted remotely on Amazon's S3 storage service.  As such, this repository is not an "out-of-the-box" resources for generating these experiments.  The files contained on the `html`, `js`,`css`, and `data` folders must be hosted, and appropriately integrated, in order to replicate these experiments exactly.
 
 ## Experimental Design
 
@@ -24,8 +24,6 @@ The experiment has a two-way design, in which two variables of the qualification
  - `tol`: Short for tolerance, this manipulation is how many incorrect codings -- as a percent of the total number of sentences in the qualification test -- a worker is allowed to submit and still be qualified to work on the task.   Based on the experimental design, this value must be from the following set: `{50,60,70,80}`.
 
 ### Generating an experiment
-
-**NOTE**: These experiments rely on formatted web pages hosted remotely on Amazon's S3 storage service.  As such, this repository is not an "out-of-the-box" resources for generating these experiments.  The files contained on the `html`, `js`,`css`, and `data` folders must be hosted, and appropriately integrated, in order to replicate these experiments exactly.
 
 The file `data/generate_coding_data.R` and `generate_json_files.R` are both `R` scripts that will regenerate the sentence data used to create both the sentences for all of the qualifying.  The `generate_coding_data.R` file creates a set of CSV files that divides the base data set by policy area and direction.  The `generate_json_files.R` uses these data set to generate the JSON files that are then used to populate the qualification tests and coding tasks.
 
