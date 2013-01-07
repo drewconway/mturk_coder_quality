@@ -15,7 +15,7 @@ function gup( name )
 }
 
 // Generate questions
-d3.json('../data/training_no_answers.json', function(data) {
+d3.json('../data/experimental_no_ans.json', function(data) {
 
     // Get question passed by qualification test
     var tuid = gup("text_unit_id"),
@@ -23,8 +23,6 @@ d3.json('../data/training_no_answers.json', function(data) {
     		return (d["text_unit_id"] == tuid)
     	}),
     	question_num = gup("question_num");
-
-    console.log(question_num)
 
     if(questions.length < 1 | question_num == "") {
         training.append("div")

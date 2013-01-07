@@ -29,6 +29,8 @@ var econ_scale = [{'label':'', 'value':'NA'},
             .attr("name", "assignmentId")
             .attr("value", ""),
 
+    // geo_location = {"latitude": null, "longitude": null};
+
     num_questions = gup("n");
     if(num_questions == "") {
         num_questions = 1
@@ -50,6 +52,17 @@ function gup( name )
   else
     return results[1];
 }
+
+// Get user geolocation data, if available
+// function getLocation (argument) {
+//     if(navigator.geolocation) {
+//         return(navigator.geolocation.getCurrentPosition((parsePositions)))
+//     }
+// }
+// function parsePositions (pos) {
+//     geo_location["latitude"] =  pos.coords.latitude;
+//     geo_location["longitude"] =  pos.coords.longitude;
+// }
 
 function checkPreview() {
     var current_assignment_id = gup("assignmentId");
@@ -162,11 +175,32 @@ function areaSelect (area_value, area_num) {
     validateCodings();
 }
 
+// Set geolocation as data in the form
+// getLocation();
+
 // Generate questions
-d3.json('../data/training_no_answers.json', function(data) {
+d3.json('../data/experimental_no_ans.json', function(data) {
 
     // Pick questions to be coded
-    var questions = sample_range(data, num_questions, false);
+    var questions = sample_range(data, num_questions, false),
+
+    // form_latitude = training.append("input")
+    //     .attr("type", "hidden")
+    //     .attr("id", "latitude")
+    //     .attr("name", "latitude")
+    //     .attr("value", geo_location["latitude"]),
+
+    // form_longitude = training.append("input")
+    //     .attr("type", "hidden")
+    //     .attr("id", "longitude")
+    //     .attr("name", "longitude")
+    //     .attr("value", geo_location["longitude"]),
+
+    form_language = training.append("input")
+        .attr("type", "hidden")
+        .attr("id", "lang")
+        .attr("name", "lang")
+        .attr("value", navigator.language);
 
     if(questions.length < 1) {
         training.append("div")
@@ -208,8 +242,12 @@ d3.json('../data/training_no_answers.json', function(data) {
                         
 
                 q_text = q_div.append("div")
-                        .attr("class", "manifesto_text")
-                        .attr("name", "text_unit_id")
+                        .attr("class", "manifesto_text"),
+
+                q_text_id = q_div.append("input")
+                        .attr("type", "hidden")
+                        .attr("id", "text_unit_id_"+i)
+                        .attr("name", "text_unit_id_"+i)
                         .attr("value", d["text_unit_id"]),
                         
 

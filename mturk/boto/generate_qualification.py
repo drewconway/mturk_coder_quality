@@ -3,7 +3,7 @@
 """
 generate_qualification.py
 
-Description: Functions for genreating a qualification test on Mechnical Turk. These tests are specific 
+Description: Functions for generating a qualification test on Mechanical Turk. These tests are specific 
 			 to coder quality experiments designed by the author. This is not a general purpose
 			 solution!
 
@@ -18,6 +18,7 @@ from boto.mturk.question import ExternalQuestion, QuestionContent, Question, Que
 from boto.mturk.question import Overview,AnswerSpecification,SelectionAnswer,FormattedContent
 from boto.mturk.qualification import Qualifications, Requirement
 from scipy import random
+from numpy import arange
 import json
 
 class CoderQualityQualificationTest(object):
@@ -26,45 +27,40 @@ class CoderQualityQualificationTest(object):
 	QuestionForm and AnswerForm objects, which are needed to create a new
 	qualification test Qualification type.
 
-	Paraneters
+	Parameters
 	-----------
-	
-	num_questions : The number of sentences to be coded in the test.
 
-	num_correct : The minimum  number of correctly coded sentences 
-				  needed to qualify for this QualificationType
+	percent_correct : The minimum  percent of correctly coded sentences 
+		needed to qualify for this QualificationType
 
 	fp : A file path to a JSON text file with sentence data. 
 
 	title : Title to be displayed for qualification test
 
-	rand_sentences : If True, randonly select 'num_questions' sentences from set; otherwise,
-	select the first 'num_questions' from the list.
-
 
 	"""
-	def __init__(self, num_questions, min_correct, fp, title, rand_sentences=True):
+	def __init__(self, fp, percent_correct, title):
 		super(CoderQualityQualificationTest, self).__init__()
 
-		if min_correct > num_questions:
-			raise ValueError("The value of 'num_questions' must be less than or equal to 'min_correct'")
+		if percent_correct > 1.0 or percent_correct < 0:
+			raise ValueError("The value of 'percent_correct' must in [0,1]")
 
 		# Hold init values
-		self.num_questions = num_questions
-		self.min_correct = min_correct
+		self.percent_correct = percent_correct
 		self.fp = fp
 		self.title = title
 
+
 		# Open data file
 		f = open(fp, "r")
-		self.__sentences_wt_codings = json.load(f)
+		self.__qual_sentences = json.load(f)
 		f.close()
 
+		# Set question data
+		self.num_questions = len(self.__qual_sentences)
+		self.min_correct = int(round(self.num_questions * self.percent_correct))
+
 		# Generate sentence data
-		if rand_sentences:
-			self.__qual_sentences = self.__qualification_sentences(self.__sentences_wt_codings, self.num_questions)
-		else:
-			self.__qual_sentences = self.__sentences_wt_codings[0,self.num_questions]
 		self.__qual_test, self.__ans_key = self.__generate_qualification_test(self.__qual_sentences, self.min_correct, self.title)		
 		
 
@@ -74,9 +70,9 @@ class CoderQualityQualificationTest(object):
 		'''
 
 		# Get answer values
-		area_ans = sentence_data["policy_area"]
-		econ_ans = sentence_data["econ_scale"]
-		soc_ans = sentence_data["soc_scale"]
+		area_ans = sentence_data["policy_area_gold"]
+		econ_ans = sentence_data["econ_scale_gold"]
+		soc_ans = sentence_data["soc_scale_gold"]
 		if econ_ans == "":
 			econ_ans = "NA"
 		if soc_ans == "":
@@ -84,16 +80,16 @@ class CoderQualityQualificationTest(object):
 
 		# Add policy area answer
 		area_key = "<Question><QuestionIdentifier>policy_area_"+str(question_num)+"</QuestionIdentifier>"
-		area_key = area_key + "<AnswerOption><SelectionIdentifier>"+area_ans+"</SelectionIdentifier>"
+		area_key = area_key + "<AnswerOption><SelectionIdentifier>"+str(area_ans)+"</SelectionIdentifier>"
 		area_key = area_key	+"<AnswerScore>1</AnswerScore></AnswerOption></Question>"
 
 		econ_key = "<Question><QuestionIdentifier>econ_scale_"+str(question_num)+"</QuestionIdentifier>"
-		econ_key = econ_key + "<AnswerOption><SelectionIdentifier>"+econ_ans+"</SelectionIdentifier>"
-		econ_key = econ_key + "<AnswerScore>1</AnswerScore></AnswerOption></Question>"
+		econ_key = econ_key + "<AnswerOption><SelectionIdentifier>"+str(econ_ans)+"</SelectionIdentifier>"
+		econ_key = econ_key + "<AnswerScore>0</AnswerScore></AnswerOption></Question>"
 
 		soc_key = "<Question><QuestionIdentifier>soc_scale_"+str(question_num)+"</QuestionIdentifier>"
-		soc_key = soc_key + "<AnswerOption><SelectionIdentifier>"+soc_ans+"</SelectionIdentifier>"
-		soc_key = soc_key + "<AnswerScore>1</AnswerScore></AnswerOption></Question>"
+		soc_key = soc_key + "<AnswerOption><SelectionIdentifier>"+str(soc_ans)+"</SelectionIdentifier>"
+		soc_key = soc_key + "<AnswerScore>0</AnswerScore></AnswerOption></Question>"
 
 		return area_key + econ_key + soc_key
 
@@ -103,9 +99,9 @@ class CoderQualityQualificationTest(object):
 		for a in answers:
 			answer_key = answer_key + a
 
-				# Add the qualification value mapping to the answer key
-		min_bound = num_correct * 3
-		max_bound = num_sentences * 3
+		# Add the qualification value mapping to the answer key
+		min_bound = num_correct
+		max_bound = num_sentences
 
 		# Add map
 		value_map = "<QualificationValueMapping><RangeMapping><SummedScoreRange>"
@@ -146,7 +142,7 @@ class CoderQualityQualificationTest(object):
 		# Generate the question text externally.
 		tuid = sentence_data["text_unit_id"]
 		q_url = "http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/formatted_sentence.html?text_unit_id="
-		q_url_formatted = q_url + tuid + "&amp;question_num=" + str(question_num)
+		q_url_formatted = q_url + str(tuid) + "&amp;question_num=" + str(question_num)
 
 		# Create policy area question and answer fields
 		content_sentence = QuestionContent()
@@ -216,20 +212,7 @@ class CoderQualityQualificationTest(object):
 
 		return (qual_form, answer_key)
 
-	def __qualification_sentences(self, sentences, n):
-		'''
-		Pick 'n' random sentences for qualification test
-		'''
-		random.shuffle(sentences)
-		return sentences[0:n]
-
-	def regen_qualification_sentences():
-		'''
-		In case you want to change the sentences in the qualification test
-		'''
-		self.__qual_sentences = qualification_sentences(self.sentence_wt_codings, self.num_questions)
-
-	def get_qusestion_form(self):
+	def get_question_form(self):
 		return self.__qual_test
 
 	def get_answer_form(self):
@@ -271,8 +254,9 @@ class CoderQualityQualificationType(object):
 			self.__qual_type = self.mturk.create_qualification_type(name=self.name, 
 																description=self.description, 
 																status="Active",
+																retry_delay=60*5,
 	 															keywords=self.keywords, 
-	 															test=self.qualification_test.get_qusestion_form(), 
+	 															test=self.qualification_test.get_question_form(), 
 	 															answer_key=self.qualification_test.get_answer_form(), 
 	 															test_duration=self.duration)
 
@@ -299,24 +283,28 @@ if __name__ == '__main__':
 	host = "mechanicalturk.sandbox.amazonaws.com"
 
 	# Qualification test info
-	n = 4
-	c = 3
-	data_dir = "../../data/"
-	title = "Qualification test for recording the contents of political text on economic and social scales"
-
-	# Create qualification test object
-	qual = CoderQualityQualificationTest(n, c, data_dir+"test_with_answers.json", title)
-
-	# Qualification Type info
-	# qual_name = "Coder Qualification Test "+datetime.now().strftime("%s")
-	qual_name = "Test Questions With Known Answers ID: "+datetime.now().strftime("%s")
-	qual_description = "A qualification test in which you read sentences from political texts and judge whether these deal with economic or social policy."
-	qual_keywords = ["text","coding","political"]
-	duration = 30*60
-
-	# Open MTurk connection
-	mturk = MTurkConnection(host = host)
-
-	# Create new qualification type
-	qual_type = CoderQualityQualificationType(mturk, qual, qual_name, qual_description, qual_keywords, duration, create=True)
+	percent_range = arange(.5,.9,.1)
+	qual_range = aragne(4,20,4)
+	data_dir = "../../data/json/"
 	
+	# Create separate qualifications for each question set"
+	for i in qual_range:
+		for c in percent_range:
+			title = "Qualification test #"+str(i-3)+" for recording the contents of political text on economic and social scales"
+
+			# Create qualification test object
+			qual = CoderQualityQualificationTest(data_dir+"training/"+str(i)+"_"+str(int(c*10))+".json", c, title)
+
+			# Qualification Type info
+			# qual_name = "Coder Qualification Test "+datetime.now().strftime("%s")
+			qual_name = "Coder Qualification Test #"+str(i-3)
+			qual_description = "A qualification test in which you read sentences from political texts and judge whether these deal with economic or social policy."
+			qual_keywords = ["text","coding","political"]
+			duration = 30*60
+
+			# Open MTurk connection
+			mturk = MTurkConnection(host = host)
+
+			# Create new qualification type
+			qual_type = CoderQualityQualificationType(mturk, qual, qual_name, qual_description, qual_keywords, duration, create=True)
+		
