@@ -27,9 +27,7 @@ var econ_scale = [{'label':'', 'value':'NA'},
             .attr("type", "hidden")
             .attr("id", "assignmentId")
             .attr("name", "assignmentId")
-            .attr("value", ""),
-
-    // geo_location = {"latitude": null, "longitude": null};
+            .attr("value", "");
 
     num_questions = gup("n");
     if(num_questions == "") {
@@ -52,17 +50,6 @@ function gup( name )
   else
     return results[1];
 }
-
-// Get user geolocation data, if available
-// function getLocation (argument) {
-//     if(navigator.geolocation) {
-//         return(navigator.geolocation.getCurrentPosition((parsePositions)))
-//     }
-// }
-// function parsePositions (pos) {
-//     geo_location["latitude"] =  pos.coords.latitude;
-//     geo_location["longitude"] =  pos.coords.longitude;
-// }
 
 function checkPreview() {
     var current_assignment_id = gup("assignmentId");
@@ -175,26 +162,11 @@ function areaSelect (area_value, area_num) {
     validateCodings();
 }
 
-// Set geolocation as data in the form
-// getLocation();
-
 // Generate questions
 d3.json('../data/experimental_no_ans.json', function(data) {
 
     // Pick questions to be coded
     var questions = sample_range(data, num_questions, false),
-
-    // form_latitude = training.append("input")
-    //     .attr("type", "hidden")
-    //     .attr("id", "latitude")
-    //     .attr("name", "latitude")
-    //     .attr("value", geo_location["latitude"]),
-
-    // form_longitude = training.append("input")
-    //     .attr("type", "hidden")
-    //     .attr("id", "longitude")
-    //     .attr("name", "longitude")
-    //     .attr("value", geo_location["longitude"]),
 
     form_language = training.append("input")
         .attr("type", "hidden")

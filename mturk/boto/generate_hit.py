@@ -41,6 +41,7 @@ from generate_qualification import CoderQualityQualificationTest,CoderQualityQua
 import argparse
 from datetime import datetime
 
+
 if __name__ == '__main__':
 
 	# Account data saved locally in config boto config file
@@ -114,26 +115,33 @@ if __name__ == '__main__':
 	
 	# Create separate qualifications and -- HITs associated with them -- for each question set"
 	title = "Qualification test #"+str(i+c)+" for recording the contents of political text on economic and social scales"
-
-	# Create qualification test object
-	qual = CoderQualityQualificationTest(data_dir+"training/"+str(i)+"_"+str(int(c*10))+".json", c, title)
-
-	# Qualification Type info
-	# qual_name = "Coder Qualification Test "+datetime.now().strftime("%s")
 	qual_name = "Coder Qualification Test #"+str(i+c)
 
-	# Create new qualification type
-	qual_type = CoderQualityQualificationType(mturk, qual, qual_name, qual_description, keywords, duration, create=True)
+	# Create qualification test object.  Need to check that the qualification hasn't already been generated.
+	# If it has, pull it from the set, otherwise generate it.
+	current_quals = mturk.search_qualification_types(query="Coder")
+	current_qual_names = map(lambda q: q.Name, current_quals)
+	if qual_name not in current_qual_names:
+		qual = CoderQualityQualificationTest(data_dir+"training/"+str(i)+"_"+str(int(c*10))+".json", c, title)
+
+		# Create new qualification type
+		qual_type = CoderQualityQualificationType(mturk, qual, qual_name, qual_description, keywords, duration, create=True)
+		qual_id = qual_type.get_type_id()
+	else:
+		requested_qual = current_qual_names.index(qual_name)
+		qual_type = current_quals[requested_qual]
+		qual_id = qual_type.QualificationTypeId
+
 
 	## Register test as a requirement for hit
-	qual_id = qual_type.get_type_id()
+	
 	req = Requirement(qualification_type_id=qual_id, 
 					  comparator="GreaterThan", 
 					  integer_value=0)
 	qual = Qualifications()
 	qual.add(req)	
 
-	# Toggle on Master Cateogrization from user input
+	# Toggle on Master Categorization from user input
 	if args.master == "y":
 		qual.add(master_req)	
 
@@ -161,6 +169,6 @@ if __name__ == '__main__':
 
 	## Output to stdout
 	print "#################################"
-	print str(len(hit_results))+" HITS POSTED!"
+	print str(len(hit_results))+" HIT(s) POSTED!"
 	print "#################################"
 
