@@ -7,25 +7,25 @@ Description:	A command-line interface for generating a a coder quality experimen
 				test and an external questions hosted on S3.  Usage is as follows:
 
 				$ python generate_hit.py -h
-				usage: generate_hit.py [-h] [--hits N] [--asgn N] [--count {4,8,12,16}]
-			                       [--tol {50,60,70,80}] [--prod {y,n}] [--master {y,n}]
+				usage: generate_hit.py [-h] [--hits N] [--asgn N] [--count {6,12}]
+                       [--tol {67,84}] [--prod {y,n}] [--master {y,n}]
 
 				This script will push a new experiment to MTurk. Several users defined
 				arguments are required.
 
 				optional arguments:
-				  -h, --help           show this help message and exit
-				  --hits N             The number of HITs to push of this type. Default is
-				                       100.
-				  --asgn N             The number of assignments for each HIT. Default is 5.
-				  --count {4,8,12,16}  The number of sentences in the qualification test.
-				                       Default is 4.
-				  --tol {50,60,70,80}  The percentage of sentences coded correctly in order to
-				                       pass qualification test. Default is 80.
-				  --prod {y,n}         Should this HIT be pushed to the production server?
-				                       Default is 'n'.
-				  --master {y,n}       Should the Master Categorization Qualification be added
-				                       to this HIT? Default is 'n'.
+				  -h, --help      show this help message and exit
+				  --hits N        The number of HITs to push of this type. Default is 100.
+				  --asgn N        The number of assignments for each HIT. Default is 5.
+				  --count {6,12}  The number of sentences in the qualification test. Default
+				                  is 6.
+				  --tol {67,84}   The percentage of sentences coded correctly in order to pass
+				                  qualification test. Default is 67.
+				  --prod {y,n}    Should this HIT be pushed to the production server? Default
+				                  is 'n'.
+				  --master {y,n}  Should the Master Categorization Qualification be added to
+				                  this HIT? Default is 'n'.
+
 
 
 Created by  (drew.conway@nyu.edu) on
@@ -57,10 +57,10 @@ if __name__ == '__main__':
 	# This is our two-way experimental design, by number of qualification sentences in test and 
 	# tolerance for incorrect codings. Thus, the user inputs are restricted to those discussed
 	# during the planning phase!
-	parser.add_argument("--count", type=int, choices=[4,8,12,16], default=4, 
-		help="The number of sentences in the qualification test. Default is 4.")
-	parser.add_argument("--tol", type=int, choices=[50,60,70,80], default=80, 
-		help="The percentage of sentences coded correctly in order to pass qualification test. Default is 80.")
+	parser.add_argument("--count", type=int, choices=[6,12], default=6, 
+		help="The number of sentences in the qualification test. Default is 6.")
+	parser.add_argument("--tol", type=int, choices=[67,84], default=67,
+		help="The percentage of sentences coded correctly in order to pass qualification test. Default is 67.")
 	
 	# Optional components to alter HIT location and Requirement
 	parser.add_argument("--prod", type=str, choices="yn", default="n",
