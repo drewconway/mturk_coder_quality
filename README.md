@@ -42,8 +42,8 @@ The file `mturk/boto/generate_hit.py` is used to create a single experiment base
 
 	optional arguments:
 	  -h, --help      show this help message and exit
-	  --hits N        The number of HITs to push of this type. Default is 100.
-	  --asgn N        The number of assignments for each HIT. Default is 5.
+	  --hits N        The number of HITs to push of this type. Default is 50.
+	  --asgn N        The number of assignments for each HIT. Default is 30.
 	  --count {6,12}  The number of sentences in the qualification test. Default
 	                  is 6.
 	  --tol {67,84}   The percentage of sentences coded correctly in order to pass
@@ -52,6 +52,10 @@ The file `mturk/boto/generate_hit.py` is used to create a single experiment base
 	                  is 'n'.
 	  --master {y,n}  Should the Master Categorization Qualification be added to
 	                  this HIT? Default is 'n'.
+	  --access ACCESS  Your AWS access key. Will look for boto configuration file
+				                   if nothing is provided
+	  --secret SECRET  Your AWS secret access key. Will look for boto
+	                   configuration file if nothing is provided
 
 
 This script automatically creates both the a new Qualification Type based on the set manipulation, and a given set of HITs linked to that qualification type.  The qualification type's title is a reference to the manipulation, as *Qualification test #`count`+(`tol` / 100)*, such that if `count`=4 and `tol`=50 the qualification title will be *Qualification test #4.5*.

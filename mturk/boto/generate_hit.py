@@ -8,25 +8,28 @@ Description:	A command-line interface for generating a a coder quality experimen
 
 				$ python generate_hit.py -h
 				usage: generate_hit.py [-h] [--hits N] [--asgn N] [--count {6,12}]
-                       [--tol {67,84}] [--prod {y,n}] [--master {y,n}]
+				                       [--tol {67,84}] [--prod {y,n}] [--master {y,n}]
+				                       [--access ACCESS] [--secret SECRET]
 
 				This script will push a new experiment to MTurk. Several users defined
 				arguments are required.
 
 				optional arguments:
-				  -h, --help      show this help message and exit
-				  --hits N        The number of HITs to push of this type. Default is 100.
-				  --asgn N        The number of assignments for each HIT. Default is 5.
-				  --count {6,12}  The number of sentences in the qualification test. Default
-				                  is 6.
-				  --tol {67,84}   The percentage of sentences coded correctly in order to pass
-				                  qualification test. Default is 67.
-				  --prod {y,n}    Should this HIT be pushed to the production server? Default
-				                  is 'n'.
-				  --master {y,n}  Should the Master Categorization Qualification be added to
-				                  this HIT? Default is 'n'.
-
-
+				  -h, --help       show this help message and exit
+				  --hits N         The number of HITs to push of this type. Default is 50.
+				  --asgn N         The number of assignments for each HIT. Default is 30.
+				  --count {6,12}   The number of sentences in the qualification test. Default
+				                   is 6.
+				  --tol {67,84}    The percentage of sentences coded correctly in order to
+				                   pass qualification test. Default is 67.
+				  --prod {y,n}     Should this HIT be pushed to the production server? Default
+				                   is 'n'.
+				  --master {y,n}   Should the Master Categorization Qualification be added to
+				                   this HIT? Default is 'n'.
+				  --access ACCESS  Your AWS access key. Will look for boto configuration file
+				                   if nothing is provided
+				  --secret SECRET  Your AWS secret access key. Will look for boto
+				                   configuration file if nothing is provided
 
 Created by  (drew.conway@nyu.edu) on
 # Copyright (c) , under the Simplified BSD License.  
@@ -49,10 +52,10 @@ if __name__ == '__main__':
 	
 	# Take in arguments provided to script by user. The first set are basic HIT components
 	parser = argparse.ArgumentParser(description='This script will push a new experiment to MTurk. Several users defined arguments are required.')
-	parser.add_argument("--hits", metavar="N", type=int, default=100,
-		help="The number of HITs to push of this type. Default is 100.")
-	parser.add_argument("--asgn", metavar="N", type=int, default=5,
-		help="The number of assignments for each HIT. Default is 5.")
+	parser.add_argument("--hits", metavar="N", type=int, default=50,
+		help="The number of HITs to push of this type. Default is 50.")
+	parser.add_argument("--asgn", metavar="N", type=int, default=30,
+		help="The number of assignments for each HIT. Default is 30.")
 	
 	# This is our two-way experimental design, by number of qualification sentences in test and 
 	# tolerance for incorrect codings. Thus, the user inputs are restricted to those discussed
@@ -67,6 +70,13 @@ if __name__ == '__main__':
 		help="Should this HIT be pushed to the production server? Default is 'n'.")
 	parser.add_argument("--master", type=str, choices="yn", default="n",
 		help="Should the Master Categorization Qualification be added to this HIT? Default is 'n'.")
+
+	# Options to set AWS credentials
+	parser.add_argument("--access", type=str, default="",
+		help="Your AWS access key. Will look for boto configuration file if nothing is provided")
+
+	parser.add_argument("--secret", type=str, default="",
+		help="Your AWS secret access key. Will look for boto configuration file if nothing is provided")
 	
 	# Get arguments from user 
 	args = parser.parse_args()
@@ -76,6 +86,8 @@ if __name__ == '__main__':
 	c = args.tol / 100.
 	hits_to_push = args.hits
 	assignments = args.asgn
+	access = args.access
+	secret = args.secret
 	if args.prod == "n":
 		host = "mechanicalturk.sandbox.amazonaws.com"
 	else:
@@ -92,8 +104,10 @@ if __name__ == '__main__':
 	duration = 30*60
 
 	# Open MTurk connection
-	mturk = MTurkConnection(host = host)
-
+	if access != "" and secret != "":
+		mturk = MTurkConnection(host = host, aws_access_key_id=access, aws_secret_access_key=secret)
+	else:
+		mturk = MTurkConnection(host = host)
 	
 	# Master Categorization Requirenment
 	master_req = Requirement(qualification_type_id="2NDP2L92HECWY8NS8H3CK0CP5L9GHO",
@@ -122,7 +136,7 @@ if __name__ == '__main__':
 	current_quals = mturk.search_qualification_types(query="Coder")
 	current_qual_names = map(lambda q: q.Name, current_quals)
 	if qual_name not in current_qual_names:
-		qual = CoderQualityQualificationTest(data_dir+"training/"+str(i)+"_"+str(int(c*10))+".json", c, title)
+		qual = CoderQualityQualificationTest(data_dir+"training/"+str(i)+"_"+str(int(c*100))+".json", c, title)
 
 		# Create new qualification type
 		qual_type = CoderQualityQualificationType(mturk, qual, qual_name, qual_description, keywords, duration, create=True)
@@ -147,8 +161,8 @@ if __name__ == '__main__':
 
 	### Create HIT with qualification test
 
-	# Title changes base don qualifications
-	hit_title = "HIT Test #"+str(i+c)
+	# Title changes based on qualifications
+	hit_title = "Political Text Coding #"+str(i+c)
 
 	# Workers get paid +$0.01 for each additional qualification sentence requirement
 	reward = base_reward + ((i-4.)/100)

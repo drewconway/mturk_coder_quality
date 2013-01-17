@@ -40,8 +40,8 @@ experimental_data <- rbind(sentence_data[["none_sample"]],
 # Need to sample from each of these data sets an equal number of training
 # sentences, which will be dropped from the sentences to be coded
 
-training_sequence <- seq(4,16,4)
-tol_sequence <- seq(.5,.8,.1)
+training_sequence <- c(6,12)
+tol_sequence <- c(.67,.84)
 training_data <- list()
 
 for(i in 1:length(training_sequence)) {

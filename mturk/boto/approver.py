@@ -3,8 +3,22 @@
 """
 approver.py
 
-Description: Simple script that looks for submitted results and approves them. Run as a cron
-job every hour.
+Description: 		Simple script that looks for submitted results and approves them. Run as a cron
+					job every hour.
+
+					$ python approver.py -h
+					usage: approver.py [-h] [--prod {y,n}] [--access ACCESS] [--secret SECRET]
+
+					This script downloads coding results and approves works.
+
+					optional arguments:
+					  -h, --help       show this help message and exit
+					  --prod {y,n}     Should we look for results on the production server?
+					                   Default is 'n', which is the sandbox.
+					  --access ACCESS  Your AWS access key. Will look for boto configuration file
+					                   if nothing is provided
+					  --secret SECRET  Your AWS secret access key. Will look for boto
+					                   configuration file if nothing is provided
 
 Created by  (drew.conway@nyu.edu) on
 # Copyright (c) , under the Simplified BSD License.  
@@ -65,8 +79,17 @@ if __name__ == '__main__':
 	parser.add_argument("--prod", type=str, choices="yn", default="n",
 		help="Should we look for results on the production server? Default is 'n', which is the sandbox.")
 
+	# Options to set AWS credentials
+	parser.add_argument("--access", type=str, default="",
+		help="Your AWS access key. Will look for boto configuration file if nothing is provided")
+
+	parser.add_argument("--secret", type=str, default="",
+		help="Your AWS secret access key. Will look for boto configuration file if nothing is provided")
+
 	# Get arguments from user 
 	args = parser.parse_args()
+	access = args.access
+	secret = args.secret
 
 	# Perform server switch
 	if args.prod == "n":
@@ -77,7 +100,10 @@ if __name__ == '__main__':
 		res_dir = res_dir + "production/"
 
 	# Open MTurk connection
-	mturk = MTurkConnection(host = host)
+	if access != "" and secret != "":
+		mturk = MTurkConnection(host = host, aws_access_key_id=access, aws_secret_access_key=secret)
+	else:
+		mturk = MTurkConnection(host = host)
 
 	# Download reviewable HITs
 	reviewable_hits = list()
