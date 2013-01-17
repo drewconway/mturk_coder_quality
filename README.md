@@ -19,9 +19,9 @@ This set of experiments seeks to test how various mechanism for qualifying Mecha
 
 The experiment has a two-way design, in which two variables of the qualification test are manipulated to form a comparative data set.  
 
- - `count`: This manipulation is the total number of sentences contained in a qualification test.  Based on the experimental design, this value must be from the following set: `{4,8,12,16}`
+ - `count`: This manipulation is the total number of sentences contained in a qualification test.  Based on the experimental design, this value must be from the following set: `{6,12}`
 
- - `tol`: Short for tolerance, this manipulation is how many incorrect codings -- as a percent of the total number of sentences in the qualification test -- a worker is allowed to submit and still be qualified to work on the task.   Based on the experimental design, this value must be from the following set: `{50,60,70,80}`.
+ - `tol`: Short for tolerance, this manipulation is how many incorrect codings -- as a percent of the total number of sentences in the qualification test -- a worker is allowed to submit and still be qualified to work on the task.   Based on the experimental design, this value must be from the following set: `{67,84}`.
 
 ### Generating an experiment
 
@@ -36,26 +36,28 @@ The file `mturk/boto/generate_hit.py` is used to create a single experiment base
 	$ python generate_hit.py -h
 	usage: generate_hit.py [-h] [--hits N] [--asgn N] [--count {6,12}]
 	                       [--tol {67,84}] [--prod {y,n}] [--master {y,n}]
+	                       [--access ACCESS] [--secret SECRET]
 
 	This script will push a new experiment to MTurk. Several users defined
 	arguments are required.
 
 	optional arguments:
-	  -h, --help      show this help message and exit
-	  --hits N        The number of HITs to push of this type. Default is 50.
-	  --asgn N        The number of assignments for each HIT. Default is 30.
-	  --count {6,12}  The number of sentences in the qualification test. Default
-	                  is 6.
-	  --tol {67,84}   The percentage of sentences coded correctly in order to pass
-	                  qualification test. Default is 67.
-	  --prod {y,n}    Should this HIT be pushed to the production server? Default
-	                  is 'n'.
-	  --master {y,n}  Should the Master Categorization Qualification be added to
-	                  this HIT? Default is 'n'.
+	  -h, --help       show this help message and exit
+	  --hits N         The number of HITs to push of this type. Default is 50.
+	  --asgn N         The number of assignments for each HIT. Default is 30.
+	  --count {6,12}   The number of sentences in the qualification test. Default
+	                   is 6.
+	  --tol {67,84}    The percentage of sentences coded correctly in order to
+	                   pass qualification test. Default is 67.
+	  --prod {y,n}     Should this HIT be pushed to the production server? Default
+	                   is 'n'.
+	  --master {y,n}   Should the Master Categorization Qualification be added to
+	                   this HIT? Default is 'n'.
 	  --access ACCESS  Your AWS access key. Will look for boto configuration file
-				                   if nothing is provided
+	                   if nothing is provided
 	  --secret SECRET  Your AWS secret access key. Will look for boto
 	                   configuration file if nothing is provided
+
 
 
 This script automatically creates both the a new Qualification Type based on the set manipulation, and a given set of HITs linked to that qualification type.  The qualification type's title is a reference to the manipulation, as *Qualification test #`count`+(`tol` / 100)*, such that if `count`=4 and `tol`=50 the qualification title will be *Qualification test #4.5*.
