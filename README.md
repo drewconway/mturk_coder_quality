@@ -1,7 +1,7 @@
 Experiments to Improve Coder Quality in Mechanical Turk 
 ========================================================
 
->  - *Last updated*: January 7, 2013
+>  - *Last updated*: January 17, 2013
 >  - *Author*: Drew Conway
 >  - *Contact*: drew.conway@nyu.edu
 
