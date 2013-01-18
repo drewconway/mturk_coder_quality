@@ -74,6 +74,9 @@ if __name__ == '__main__':
 	# File path to downloads
 	res_dir = "../results/"
 
+	# Record start time
+	start_time = datetime.now().strftime("%s")
+
 	# Need to take single user argument for production or sandbox server
 	parser = argparse.ArgumentParser(description='This script downloads coding results and approves works.')
 	parser.add_argument("--prod", type=str, choices="yn", default="n",
@@ -98,6 +101,9 @@ if __name__ == '__main__':
 	else:
 		host = "mechanicalturk.amazonaws.com"
 		res_dir = res_dir + "production/"
+
+	# Open log file
+	log_con = open(res_dir+start_time+".log", "w")
 
 	# Open MTurk connection
 	if access != "" and secret != "":
@@ -128,13 +134,16 @@ if __name__ == '__main__':
 
 	# # Output file, name simply based on the time it is created
 	if len(responses) > 0:
-		f = open(res_dir+datetime.now().strftime("%s")+".csv", "w")
+		f = open(res_dir+start_time+".csv", "w")
 		dw = csv.DictWriter(f, fieldnames=responses[0].keys())
 		dw.writeheader()
 		for r in responses:
 			dw.writerow(r)
 		f.close()
 
+	# Output log life
+	log_con.writeline(str(len(responses))+" approved at runtime: "+start_time)
+	log_con.close()
 
 
 
