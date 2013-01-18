@@ -20,7 +20,7 @@ var econ_scale = [{'label':'', 'value':'NA'},
     training = d3.select('#hit')
         .append("form")
             .attr("method", "GET")
-            .attr("action", "http://workersandbox.mturk.com/mturk/externalSubmit")
+            .attr("action", "http://mturk.com/mturk/externalSubmit")
             .attr("id", "hit_form"),
 
     assignment_id = training.append("input")
@@ -119,7 +119,8 @@ function areaSelect (area_value, area_num) {
     if(area_value == 0) {
         var policy_scale = scale_select.append("option")
                 .attr("value", "NA")
-                .attr("label", ""),
+                .attr("label", "")
+                .text(""),
 
             scale_warning = label_select.append("p")
                 .attr("class", "text-error pull-right")
@@ -128,7 +129,8 @@ function areaSelect (area_value, area_num) {
     if(area_value == 1) {
         var policy_scale = scale_select.append("option")
                 .attr("value", "NA")
-                .attr("label", ""),
+                .attr("label", "")
+                .text(""),
 
             scale_message = label_select.append("p")
                 .attr("class", "muted pull-right")
@@ -141,7 +143,8 @@ function areaSelect (area_value, area_num) {
           .enter()
             .append("option")
                 .attr("value", function(d) { return d["value"]; })
-                .attr("label", function(d) { return d["label"]; }),
+                .attr("label", function(d) { return d["label"]; })
+                .text(function(d) { return d["label"]; }),
 
             scale_message = label_select.append("p")
                 .attr("class", "pull-right")
@@ -153,7 +156,8 @@ function areaSelect (area_value, area_num) {
           .enter()
             .append("option")
                 .attr("value", function(d) { return d["value"]; })
-                .attr("label", function(d) { return d["label"]; }),
+                .attr("label", function(d) { return d["label"]; })
+                .text(function(d) { return d["label"]; }),
 
             scale_message = label_select.append("p")
                     .attr("class", "pull-right")
@@ -247,7 +251,8 @@ d3.json('../data/experimental_no_ans.json', function(data) {
                       .enter()
                         .append("option")
                             .attr("value", function(d) { return d["value"]; })
-                            .attr("label", function(d) { return d["label"]; }),
+                            .attr("label", function(d) { return d["label"]; })
+                            .text(function(d) { return d["label"]; }),
 
                 // Attach policy scale button
                 scale_select = btn_scale.append("select")

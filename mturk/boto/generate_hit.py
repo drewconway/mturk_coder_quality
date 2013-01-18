@@ -88,10 +88,18 @@ if __name__ == '__main__':
 	assignments = args.asgn
 	access = args.access
 	secret = args.secret
+	
+	# Toggle production or sandbox elements
 	if args.prod == "n":
 		host = "mechanicalturk.sandbox.amazonaws.com"
+		# Master Categorization Requirenment - sandbox
+		master_req = Requirement(qualification_type_id="2F1KVCNHMVHV8E9PBUB2A4J79LU20F",
+							 comparator="Exists")
 	else:
 		host = "mechanicalturk.amazonaws.com"
+		# Master Categorization Requirenment - production
+		master_req = Requirement(qualification_type_id="2NDP2L92HECWY8NS8H3CK0CP5L9GHO",
+							 comparator="Exists")
 
 	## Create qualification type
 
@@ -109,9 +117,6 @@ if __name__ == '__main__':
 	else:
 		mturk = MTurkConnection(host = host)
 	
-	# Master Categorization Requirenment
-	master_req = Requirement(qualification_type_id="2NDP2L92HECWY8NS8H3CK0CP5L9GHO",
-							 comparator="Exists")
 	## Constant data used in all HITs
 	num_hit_questions = 4
 	external_url = "https://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/index.html?n="+str(num_hit_questions)
@@ -119,7 +124,7 @@ if __name__ == '__main__':
 	base_reward = 0.11
 	duration = 3600
 	lifetime = 259200
-	approval_delay = 1296000
+	# approval_delay = 86400
 
 	# Create Question for HIT
 	external_question = ExternalQuestion(external_url=external_url, frame_height=800)
@@ -174,7 +179,7 @@ if __name__ == '__main__':
 					reward=reward,
 					duration=duration,
 					keywords=keywords,
-					approval_delay=approval_delay,
+					# approval_delay=approval_delay,
 					question=external_question,
 					lifetime=lifetime,
 					max_assignments=assignments,
