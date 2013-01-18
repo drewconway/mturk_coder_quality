@@ -118,8 +118,8 @@ if __name__ == '__main__':
 		mturk = MTurkConnection(host = host)
 	
 	## Constant data used in all HITs
-	num_hit_questions = 4
-	external_url = "https://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/index.html?n="+str(num_hit_questions)
+	num_hit_questions = 6
+	external_url = "http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/index.html?n="+str(num_hit_questions)
 	hit_description = "This task involves reading sentences from political texts and judging whether these deal with economic or social policy."
 	base_reward = 0.11
 	duration = 3600
@@ -169,8 +169,8 @@ if __name__ == '__main__':
 	# Title changes based on qualifications
 	hit_title = "Political Text Coding #"+str(i+c)
 
-	# Workers get paid +$0.01 for each additional qualification sentence requirement
-	reward = base_reward + ((i-4.)/100)
+	# Workers get paid +$0.03 a sentence, and 
+	reward = .03 * num_hit_questions
 
 	# Create HITs
 	for j in xrange(hits_to_push):

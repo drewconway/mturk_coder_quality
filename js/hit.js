@@ -20,7 +20,7 @@ var econ_scale = [{'label':'', 'value':'NA'},
     training = d3.select('#hit')
         .append("form")
             .attr("method", "GET")
-            .attr("action", "http://mturk.com/mturk/externalSubmit")
+            .attr("action", "http://www.mturk.com/mturk/externalSubmit")
             .attr("id", "hit_form"),
 
     assignment_id = training.append("input")
@@ -55,7 +55,7 @@ function checkPreview() {
     var current_assignment_id = gup("assignmentId");
     if(current_assignment_id == "ASSIGNMENT_ID_NOT_AVAILABLE") {
         var submit_btn = d3.select("#codings-btn")
-                .text("You must ACCEPT the HIT before you can submit the results."),
+                .text("This is only a preview. You must ACCEPT the HIT before you can submit the results."),
 
             instructions = d3.select("#instructionsCollapse")
                 .attr("class", "accordion-body");
