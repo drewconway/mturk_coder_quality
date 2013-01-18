@@ -142,7 +142,7 @@ if __name__ == '__main__':
 		f.close()
 
 	# Output log life
-	log_con.writeline(str(len(responses))+" approved at runtime: "+start_time)
+	log_con.write(str(len(responses))+" approved at runtime: "+start_time)
 	log_con.close()
 
 
