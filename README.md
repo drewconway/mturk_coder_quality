@@ -1,7 +1,7 @@
 Experiments to Improve Coder Quality in Mechanical Turk 
 ========================================================
 
->  - *Last updated*: January 17, 2013
+>  - *Last updated*: January 22, 2013
 >  - *Author*: Drew Conway
 >  - *Contact*: drew.conway@nyu.edu
 
@@ -34,31 +34,30 @@ The file `data/generate_coding_data.R` and `generate_json_files.R` are both `R` 
 The file `mturk/boto/generate_hit.py` is used to create a single experiment based on our the two-way design.  This file should be run from the command line, which contains the following help output:
 
 	$ python generate_hit.py -h
-	usage: generate_hit.py [-h] [--hits N] [--asgn N] [--count {6,12}]
-	                       [--tol {67,84}] [--prod {y,n}] [--master {y,n}]
-	                       [--access ACCESS] [--secret SECRET]
+	usage: generate_hit.py [-h] [--hits N] [--asgn N] [--count {0,6,12}]
+                       [--tol {0,67,84}] [--prod {y,n}] [--master {y,n}]
+                       [--access ACCESS] [--secret SECRET]
 
 	This script will push a new experiment to MTurk. Several users defined
 	arguments are required.
 
 	optional arguments:
-	  -h, --help       show this help message and exit
-	  --hits N         The number of HITs to push of this type. Default is 50.
-	  --asgn N         The number of assignments for each HIT. Default is 30.
-	  --count {6,12}   The number of sentences in the qualification test. Default
-	                   is 6.
-	  --tol {67,84}    The percentage of sentences coded correctly in order to
-	                   pass qualification test. Default is 67.
-	  --prod {y,n}     Should this HIT be pushed to the production server? Default
-	                   is 'n'.
-	  --master {y,n}   Should the Master Categorization Qualification be added to
-	                   this HIT? Default is 'n'.
-	  --access ACCESS  Your AWS access key. Will look for boto configuration file
-	                   if nothing is provided
-	  --secret SECRET  Your AWS secret access key. Will look for boto
-	                   configuration file if nothing is provided
-
-
+	  -h, --help        show this help message and exit
+	  --hits N          The number of HITs to push of this type. Default is 50.
+	  --asgn N          The number of assignments for each HIT. Default is 30.
+	  --count {0,6,12}  The number of sentences in the qualification test. Default
+	                    is 6, and if 0 no qualification test is assigned.
+	  --tol {0,67,84}   The percentage of sentences coded correctly in order to
+	                    pass qualification test. Default is 67, and if 0 no
+	                    qualification test is assigned.
+	  --prod {y,n}      Should this HIT be pushed to the production server?
+	                    Default is 'n'.
+	  --master {y,n}    Should the Master Categorization Qualification be added to
+	                    this HIT? Default is 'n'.
+	  --access ACCESS   Your AWS access key. Will look for boto configuration file
+	                    if nothing is provided
+	  --secret SECRET   Your AWS secret access key. Will look for boto
+	                    configuration file if nothing is provided
 
 This script automatically creates both the a new Qualification Type based on the set manipulation, and a given set of HITs linked to that qualification type.  The qualification type's title is a reference to the manipulation, as *Qualification test #`count`+(`tol` / 100)*, such that if `count`=4 and `tol`=50 the qualification title will be *Qualification test #4.5*.
 

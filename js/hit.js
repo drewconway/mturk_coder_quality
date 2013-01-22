@@ -16,19 +16,8 @@ var econ_scale = [{'label':'', 'value':'NA'},
                    {'label':'Not Economic or Social', 'value':1, 'text': 'Not Economic or Social'},
                    {'label':'Economic', 'value':2, 'text': 'Economic'},
                    {'label':'Social', 'value':3, 'text': 'Social'}],
-                    
-    training = d3.select('#hit')
-        .append("form")
-            .attr("method", "GET")
-            .attr("action", "http://www.mturk.com/mturk/externalSubmit")
-            .attr("id", "hit_form"),
 
-    assignment_id = training.append("input")
-            .attr("type", "hidden")
-            .attr("id", "assignmentId")
-            .attr("name", "assignmentId")
-            .attr("value", "");
-
+    prod = gup("prod"),
     num_questions = gup("n");
     if(num_questions == "") {
         num_questions = 1
@@ -36,6 +25,27 @@ var econ_scale = [{'label':'', 'value':'NA'},
     if(parseInt(num_questions) > 10) {
         num_questions = 10
     }
+
+    if(prod == "y") {
+        var training = d3.select('#hit')
+        .append("form")
+            .attr("method", "GET")
+            .attr("action", "http://www.mturk.com/mturk/externalSubmit")
+            .attr("id", "hit_form");
+    }
+    else {
+        var training = d3.select('#hit')
+        .append("form")
+            .attr("method", "GET")
+            .attr("action", "http://workersandbox.mturk.com/mturk/externalSubmit")
+            .attr("id", "hit_form");
+    }
+
+    var assignment_id = training.append("input")
+            .attr("type", "hidden")
+            .attr("id", "assignmentId")
+            .attr("name", "assignmentId")
+            .attr("value", "");
 
 
 // Returns a URL property by name, stolen wholesale of AWS docs
