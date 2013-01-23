@@ -58,15 +58,16 @@ def parseAnswer(form, num_sentences=4):
 	return form_dict
 
 
-def reviewAssignment(assigments, mturk=None, auto_approve=True):
+def reviewAssignment(a, mturk=None, auto_approve=True):
 	answer_list = list()
-	for a in assignments:
-		if a.AssignmentStatus == "Submitted":
-			aid = a.AssignmentId
-			answer_list.append(parseAnswer(a))
-			if auto_approve:
-				mturk.approve_assignment(aid)
-	return answer_list
+	if a.AssignmentStatus == "Submitted":
+		aid = a.AssignmentId
+		answer_list.append(parseAnswer(a))
+		if auto_approve:
+			mturk.approve_assignment(aid)
+		return answer_list
+	else:
+		pass
 
 
 if __name__ == '__main__':
@@ -112,27 +113,32 @@ if __name__ == '__main__':
 		mturk = MTurkConnection(host = host)
 
 	# Download reviewable HITs
-	reviewable_hits = list()
-	m = 10
-	p = 1
-	max_page = False
-	while not max_page:
-		hit_list = mturk.get_reviewable_hits(page_size=m, page_number=p)
-		reviewable_hits.extend(hit_list)
-		if(len(hit_list) < m):
-			max_page = True
-		else:
-			p += 1
+	reviewable_assignments = list()
+	hits = mturk.get_all_hits()
+	hit_list = map(lambda h: h, hits)
+	for h in hit_list:
+		max_page = False
+		m = 10
+		p = 1
+		while not max_page:
+			assignments = mturk.get_assignments(h.HITId, page_size=m, page_number=p)
+			if len(assignments) > 0:
+				reviewable_assignments.extend(assignments)
+				if(len(assignments) < m):
+					max_page = True
+				else:
+					p += 1
+			else:
+				max_page =True
+			
 
 	# Review assignments
 	response_list = list()
-	for h in reviewable_hits:
-		assignments = mturk.get_assignments(h.HITId)
-		if len(assignments) > 0:
-			response_list.append(reviewAssignment(assignments, mturk))
+	for a in reviewable_assignments:
+		response_list.append(reviewAssignment(a, mturk))
 	responses = list(chain.from_iterable(response_list))
 
-	# # Output file, name simply based on the time it is created
+	# Output file, name simply based on the time it is created
 	if len(responses) > 0:
 		f = open(res_dir+start_time+".csv", "w")
 		dw = csv.DictWriter(f, fieldnames=responses[0].keys())
