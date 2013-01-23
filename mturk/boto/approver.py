@@ -58,16 +58,17 @@ def parseAnswer(form, num_sentences=4):
 	return form_dict
 
 
-def reviewAssignment(a, mturk=None, auto_approve=True):
+def reviewAssignment(a, mturk=None, auto_approve=True, redownload=False):
 	answer_list = list()
-	if a.AssignmentStatus == "Submitted":
-		aid = a.AssignmentId
-		answer_list.append(parseAnswer(a))
+	aid = a.AssignmentId
+	status = a.AssignmentStatus
+	if status == "Submitted":
 		if auto_approve:
 			mturk.approve_assignment(aid)
-		return answer_list
-	else:
-		pass
+		answer_list.append(parseAnswer(a))
+	if a.AssignmentStatus == "Approved" and redownload:
+		answer_list.append(parseAnswer(a))
+	return answer_list	
 
 
 if __name__ == '__main__':
@@ -135,7 +136,9 @@ if __name__ == '__main__':
 	# Review assignments
 	response_list = list()
 	for a in reviewable_assignments:
-		response_list.append(reviewAssignment(a, mturk))
+		submitted_work = reviewAssignment(a, mturk)
+		if len(submitted_work) > 0:
+			response_list.append(submitted_work)
 	responses = list(chain.from_iterable(response_list))
 
 	# Output file, name simply based on the time it is created
