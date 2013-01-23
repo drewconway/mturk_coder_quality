@@ -139,7 +139,8 @@ if __name__ == '__main__':
 		submitted_work = reviewAssignment(a, mturk)
 		if len(submitted_work) > 0:
 			response_list.append(submitted_work)
-	responses = list(chain.from_iterable(response_list))
+	if len(response_list) > 0:
+		responses = list(chain.from_iterable(response_list))
 
 	# Output file, name simply based on the time it is created
 	if len(responses) > 0:
