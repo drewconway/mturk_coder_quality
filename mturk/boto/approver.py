@@ -139,8 +139,7 @@ if __name__ == '__main__':
 		submitted_work = reviewAssignment(a, mturk)
 		if len(submitted_work) > 0:
 			response_list.append(submitted_work)
-	if len(response_list) > 0:
-		responses = list(chain.from_iterable(response_list))
+	responses = list(chain.from_iterable(response_list))
 
 	# Output file, name simply based on the time it is created
 	if len(responses) > 0:
@@ -152,7 +151,7 @@ if __name__ == '__main__':
 		f.close()
 
 	# Output log life
-	log_con.write(str(len(responses))+" approved at runtime: "+start_time)
+	log_con.write(str(len(responses))+" downloaded at runtime: "+start_time)
 	log_con.close()
 
 
