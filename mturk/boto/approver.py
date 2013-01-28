@@ -91,10 +91,18 @@ if __name__ == '__main__':
 	parser.add_argument("--secret", type=str, default="",
 		help="Your AWS secret access key. Will look for boto configuration file if nothing is provided")
 
+	parser.add_argument("--download", type=str, default="n",
+		help="Do you want to re-download data that has already been approved? Default is 'n'")
+
+	parser.add_argument("--log", type=str, default="n",
+		help="Do you want to write a log-file for each run? Default is 'n'")	
+
 	# Get arguments from user 
 	args = parser.parse_args()
 	access = args.access
 	secret = args.secret
+	download = args.download
+	log = args.log
 
 	# Perform server switch
 	if args.prod == "n":
@@ -105,7 +113,8 @@ if __name__ == '__main__':
 		res_dir = res_dir + "production/"
 
 	# Open log file
-	log_con = open(res_dir+start_time+".log", "w")
+	if log == "y":
+		log_con = open(res_dir+start_time+".log", "w")
 
 	# Open MTurk connection
 	if access != "" and secret != "":
@@ -136,7 +145,10 @@ if __name__ == '__main__':
 	# Review assignments
 	response_list = list()
 	for a in reviewable_assignments:
-		submitted_work = reviewAssignment(a, mturk)
+		if download == "n":
+			submitted_work = reviewAssignment(a, mturk)
+		else:
+			submitted_work = reviewAssignment(a, mturk, redownload=True)
 		if len(submitted_work) > 0:
 			response_list.append(submitted_work)
 	responses = list(chain.from_iterable(response_list))
@@ -151,8 +163,9 @@ if __name__ == '__main__':
 		f.close()
 
 	# Output log life
-	log_con.write(str(len(responses))+" downloaded at runtime: "+start_time)
-	log_con.close()
+	if log == "y":
+		log_con.write(str(len(responses))+" downloaded at runtime: "+start_time)
+		log_con.close()
 
 
 
