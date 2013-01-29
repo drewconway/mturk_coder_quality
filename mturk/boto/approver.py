@@ -91,10 +91,10 @@ if __name__ == '__main__':
 	parser.add_argument("--secret", type=str, default="",
 		help="Your AWS secret access key. Will look for boto configuration file if nothing is provided")
 
-	parser.add_argument("--download", type=str, default="n",
+	parser.add_argument("--download", type=str, choices="yn", default="n",
 		help="Do you want to re-download data that has already been approved? Default is 'n'")
 
-	parser.add_argument("--log", type=str, default="n",
+	parser.add_argument("--log", type=str, choices="yn", default="n",
 		help="Do you want to write a log-file for each run? Default is 'n'")	
 
 	# Get arguments from user 
