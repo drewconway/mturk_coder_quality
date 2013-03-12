@@ -57,6 +57,8 @@ if __name__ == '__main__':
 		help="The number of HITs to push of this type. Default is 50.")
 	parser.add_argument("--asgn", metavar="N", type=int, default=30,
 		help="The number of assignments for each HIT. Default is 30.")
+	parser.add_argument("--rest", type=str, choices="es", default="",
+		help="Restrict the possible policy areas for sentences to only economic policy {e}, or only social {s}. Default is to have no restriction.")
 	
 	# This is our two-way experimental design, by number of qualification sentences in test and 
 	# tolerance for incorrect codings. Thus, the user inputs are restricted to those discussed
@@ -92,8 +94,8 @@ if __name__ == '__main__':
 
 	# Constant data used in all HITs
 	num_hit_questions = 6
-	hit_description = "This task involves reading sentences from political texts and judging whether these deal with economic or social policy."
-	base_reward = 0.11
+	hit_description = "This task involves reading sentences from political texts and judging whether these sentences deal with a specific policy area."
+	base_reward = 0.19
 	duration = 3600
 	lifetime = 259200
 	keywords = ["text","coding","political"]
@@ -103,13 +105,25 @@ if __name__ == '__main__':
 	# Toggle production or sandbox elements
 	if args.prod == "n":
 		host = "mechanicalturk.sandbox.amazonaws.com"
-		external_url = "http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/index.html?prod=n&amp;n="+str(num_hit_questions)
+		if args.rest == "e":
+			external_url = "http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/economic.html?prod=n&amp;type=econ&amp;n="+str(num_hit_questions)
+		else:
+			if args.rest == "s":
+				external_url = "http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/social.html?prod=n&amp;type=soc&amp;n="+str(num_hit_questions)
+			else:
+				external_url = "http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/index.html?prod=n&amp;n="+str(num_hit_questions)
 		# Master Categorization Requirenment - sandbox
 		master_req = Requirement(qualification_type_id="2F1KVCNHMVHV8E9PBUB2A4J79LU20F",
 							 comparator="Exists")
 	else:
 		host = "mechanicalturk.amazonaws.com"
-		external_url = "http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/index.html?prod=y&amp;n="+str(num_hit_questions)
+		if args.rest == "e":
+			external_url = "http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/economic.html?prod=n&amp;type=econ&amp;n="+str(num_hit_questions)
+		else:
+			if args.rest == "s":
+				external_url = "http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/social.html?prod=n&amp;type=soc&amp;n="+str(num_hit_questions)
+			else:
+				external_url = "http://s3.amazonaws.com/aws.drewconway.com/mt/experiments/cmp/html/index.html?prod=n&amp;n="+str(num_hit_questions)
 		# Master Categorization Requirenment - production
 		master_req = Requirement(qualification_type_id="2NDP2L92HECWY8NS8H3CK0CP5L9GHO",
 							 comparator="Exists")
@@ -169,6 +183,15 @@ if __name__ == '__main__':
 	else:
 		qual = None
 
+	# Create HIT title
+	if args.rest == "e":
+		hit_title  = "Code economic political text"
+	else:
+		if args.rest == "s":
+			hit_title = "Code social political text"
+		else:
+			hit_title = "Code political text on policy dimensions"
+
 	# Toggle on Master Categorization from user input
 	if args.master == "y":
 		if qual is None:
@@ -176,15 +199,15 @@ if __name__ == '__main__':
 		qual.add(master_req)
 		
 		# Title changes based on qualifications
-		hit_title = "Code political text on policy dimensions (#"+str(i+c)+"M)"
+		hit_title = hit_title +" (#"+str(i+c)+args.rest+"M)"
 	else:
-		hit_title = "Code political text on policy dimensions (#"+str(i+c)+")"
+		hit_title = hit_title +" (#"+str(i+c)+args.rest+")"
 
 
 	### Create HIT with qualification test
 
 	# Workers get paid +$0.03 a sentence, and 
-	reward = .03 * num_hit_questions
+	reward = .035 * num_hit_questions
 
 	# Create HITs
 	for j in xrange(hits_to_push):

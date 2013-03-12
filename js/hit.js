@@ -12,18 +12,15 @@ var econ_scale = [{'label':'', 'value':'NA'},
                     {'label':'Somewhat conservative', 'value':1}, 
                     {'label':'Very conservative', 'value':2}],
 
-    policy_area = [{'label':'Select policy area', 'value':0, 'text': 'Select one'},
-                   {'label':'Not Economic or Social', 'value':1, 'text': 'Not Economic or Social'},
-                   {'label':'Economic', 'value':2, 'text': 'Economic'},
-                   {'label':'Social', 'value':3, 'text': 'Social'}],
-
     prod = gup("prod"),
+    hit_type = gup("type");
+
     num_questions = gup("n");
     if(num_questions == "") {
         num_questions = 1
     }
     if(parseInt(num_questions) > 10) {
-        num_questions = 10
+        num_questions = 10;
     }
 
     if(prod == "y") {
@@ -177,10 +174,39 @@ function areaSelect (area_value, area_num) {
 }
 
 // Generate questions
-d3.json('../data/experimental_no_ans.json', function(data) {
+d3.json('../data/experimental.json', function(data) {
 
     // Pick questions to be coded
-    var questions = sample_range(data, num_questions, false),
+
+    if(hit_type == "econ") {
+        var type_data = data.filter(function(d) {
+            return(d["policy_area_gold"] == "2" | d["policy_area_gold"] == "1");
+        }),
+        policy_area = [{'label':'Select policy area', 'value':0, 'text': 'Select one'},
+                   {'label':'Economic', 'value':2, 'text': 'Economic'},
+                   {'label':'Not Economic', 'value':1, 'text': 'Not Economic'}];
+    }
+    else {
+        if(hit_type == "soc") {
+            var type_data = data.filter(function(d) {
+                return(d["policy_area_gold"] == "3" | d["policy_area_gold"] == "1");
+            }),
+            policy_area = [{'label':'Select policy area', 'value':0, 'text': 'Select one'},
+                   {'label':'Social', 'value':3, 'text': 'Social'},
+                   {'label':'Not Social', 'value':1, 'text': 'Not Social'}];
+        }
+        else {
+            var type_data = data,
+            policy_area = [{'label':'Select policy area', 'value':0, 'text': 'Select one'},
+                   {'label':'Not Economic or Social', 'value':1, 'text': 'Not Economic or Social'},
+                   {'label':'Economic', 'value':2, 'text': 'Economic'},
+                   {'label':'Social', 'value':3, 'text': 'Social'}];
+        }
+    }
+
+    console.log(type_data.length)
+
+    var questions = sample_range(type_data, num_questions, false),
 
     form_language = training.append("input")
         .attr("type", "hidden")
