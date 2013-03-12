@@ -69,13 +69,13 @@ This script automatically creates both the a new Qualification Type based on the
 
 <table>
 	<tr>
-		<td></td><td>Short Test</td><td>Long Test</td>
+		<td></td><td>Short Test</td><td>Long Test</td><td>Econ-Only</td><td>Social-Only</td>
 	</tr>
 	<tr>
-		<td>Low-Threshold</td><td>6.67</td><td>12.67</td>
+		<td>Low-Threshold</td><td>6.67</td><td>12.67</td><td>6.67e</td><td>6.67s</td>
 	</tr>
 	<tr>
-		<td>High-Threshold</td><td>6.84</td><td>12.84</td>
+		<td>High-Threshold</td><td>6.84</td><td>12.84</td><td></td><td></td>
 	</tr>
 </table>
 
