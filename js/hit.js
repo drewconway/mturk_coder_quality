@@ -121,7 +121,6 @@ function areaSelect (area_value, area_num) {
     scale_select.selectAll("option").remove();
     label_select.selectAll("p").remove();
 
-
     
     if(area_value == 0) {
         var policy_scale = scale_select.append("option")
@@ -204,7 +203,7 @@ d3.json('../data/experimental.json', function(data) {
         }
     }
 
-    console.log(type_data.length)
+    // console.log(type_data.length)
 
     var questions = sample_range(type_data, num_questions, false),
 

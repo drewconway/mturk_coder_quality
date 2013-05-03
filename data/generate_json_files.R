@@ -79,6 +79,9 @@ for(i in names(training_json)) {
   close(con)
 }
 
+write.csv(experimental_data, file.path("csv","experimental_data.csv"),
+          row.names=FALSE)
+
 f <- file.path("json", "experimental.json")
 con <- file(f, "w")
 cat(experimental_json, file=con)

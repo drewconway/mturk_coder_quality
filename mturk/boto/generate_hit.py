@@ -95,8 +95,7 @@ if __name__ == '__main__':
 	# Constant data used in all HITs
 	num_hit_questions = 6
 	hit_description = "This task involves reading sentences from political texts and judging whether these sentences deal with a specific policy area."
-	base_reward = 0.19
-	duration = 3600
+	base_reward = 0.11
 	lifetime = 259200
 	keywords = ["text","coding","political"]
 	duration = 30*60
@@ -207,7 +206,7 @@ if __name__ == '__main__':
 	### Create HIT with qualification test
 
 	# Workers get paid +$0.03 a sentence, and 
-	reward = .035 * num_hit_questions
+	reward = 0.03 * num_hit_questions
 
 	# Create HITs
 	for j in xrange(hits_to_push):
